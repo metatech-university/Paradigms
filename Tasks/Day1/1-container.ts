@@ -6,15 +6,15 @@ class Integer {
   }
 
   add(other: Integer): Integer {
-    return new Integer(this.#value + other.#value);
+    return new Integer(this.#value + other.get());
   }
 
   div(other: Integer): Integer {
-    return new Integer(this.#value / other.#value);
+    return new Integer(this.#value / other.get());
   }
 
   gt(other: Integer): boolean {
-    return this.#value > other.#value;
+    return this.#value > other.get();
   }
 
   get(): number {

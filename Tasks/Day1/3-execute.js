@@ -38,23 +38,27 @@ class Exec {
     this.#log = log;
     this.#reader = reader;
   }
-  #execute(plan, env) {
-    if (plan.read) {
-      const user = this.#reader(plan.read.data);
-      return this.#execute(plan.read.effect, { user });
-    }
-    if (plan.match && plan.match.data) {
-      for (const [key, value] of Object.entries(plan.match.data)) {
-        if (env.user[key] !== value) {
-          return this.#execute(plan.match.effect.fail, env);
-        }
+  #match(plan, env) {
+    for (const [key, value] of Object.entries(plan.match.data)) {
+      if (env.user[key] !== value) {
+        return this.#execute(plan.match.effect.fail, env);
       }
-      return this.#execute(plan.match.effect.success, env);
     }
-    if (plan.effect) {
-      if (plan.effect.log) return () => this.#log(env.user[plan.effect.log]);
-      if (plan.effect === "noop") return () => {};
-    }
+    return this.#execute(plan.match.effect.success, env);
+  }
+  #effect(plan, env) {
+    if (plan.effect.log) return () => this.#log(env.user[plan.effect.log]);
+    if (plan.effect === "noop") return () => {};
+  }
+  #read(plan) {
+    const user = this.#reader(plan.read.data);
+    return this.#execute(plan.read.effect, { user });
+  }
+  #execute(plan, env) {
+    if (plan.read) return this.#read(plan);
+    if (plan.match && plan.match.data) return this.#match(plan, env);
+    if (plan.effect) return this.#effect(plan, env);
+    return () => {};
   }
   run(plan) {
     return this.#execute(plan, {});
