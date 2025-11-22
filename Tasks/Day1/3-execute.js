@@ -51,7 +51,7 @@ class Executor {
 
   match(ctx, { fail, success }, matchParam) {
     const key = Object.keys(matchParam)[0]
-    if (!key) return fail()
+    if (!key) return this.executeIntruction(ctx, fail)
 
     if (ctx[key] === matchParam[key]) {
       this.executeIntruction(ctx, success)

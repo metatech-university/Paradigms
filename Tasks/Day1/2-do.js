@@ -13,8 +13,7 @@ class Do {
   // }
 
   bind(fn) {
-    this.#value = fn(this.#value)
-    return this
+    return new Do(fn(this.#value))
   }
 
   run() {
