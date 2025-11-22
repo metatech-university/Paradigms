@@ -1,36 +1,59 @@
 'use strict';
 
 class Exec {
+  #reader;
+  #log;
+
   constructor({ reader, log }) {
-    this.reader = reader;
-    this.log = log;
+    this.#reader = reader;
+    this.#log = log;
   }
 
   run(plan, env = {}) {
+    if (!plan) return { env };
+
+    const { next, result } = this.#execute(plan, env);
+
+    return this.run(next, { ...env, ...(result ?? {}) });
+  }
+
+  #execute(plan, env) {
     switch (plan.type) {
-      case 'read': {
-        const user = this.reader(plan.args);
-
-        return this.run(plan.next, { ...env, user });
-      }
-      case 'match': {
-        const { field, value, next, fail } = plan;
-        const ok = env.user && env.user[field] === value;
-        const branch = ok ? next : fail;
-
-        if (!branch) return () => {};
-
-        return this.run(branch, env);
-      }
-      case 'log': {
-        return () => this.log(env.user && env.user[plan.field]);
-      }
-      case 'noop': {
-        return () => {};
-      }
+      case 'read':
+        return this.#executeRead(plan);
+      case 'match':
+        return this.#executeMatch(plan, env);
+      case 'log':
+        return this.#executeLog(plan, env);
+      case 'noop':
+        return this.#executeNoop();
       default:
-        return () => {};
+        throw new Error(`Unknown action type: ${plan.type}`);
     }
+  }
+
+  #executeRead(plan) {
+    const user = this.#reader(plan.params);
+
+    return { next: plan.next, result: { user } };
+  }
+
+  #executeMatch(plan, env) {
+    const { field, value } = plan.params;
+    const ok = env.user?.[field] === value;
+    const next = ok ? plan.next : plan.fail;
+
+    return { next, result: {} };
+  }
+
+  #executeLog(plan, env) {
+    this.#log(env.user?.[plan.params.field]);
+
+    return { next: plan.next, result: {} };
+  }
+
+  #executeNoop() {
+    return { next: null, result: {} };
   }
 }
 
@@ -38,21 +61,18 @@ const reader = ({ id }) => ({ id, name: 'marcus', age: 42 });
 
 const plan = {
   type: 'read',
-  args: { id: 15 },
+  params: { id: 15 },
   next: {
     type: 'match',
-    field: 'name',
-    value: 'marcus',
+    params: { field: 'name', value: 'marcus' },
     next: {
       type: 'log',
-      field: 'age',
+      params: { field: 'age' },
     },
-    fail: {
-      type: 'noop',
-    },
+    fail: { type: 'noop' },
   },
 };
 
 const main = new Exec({ reader, log: console.log });
 
-main.run(plan)();
+main.run(plan);
