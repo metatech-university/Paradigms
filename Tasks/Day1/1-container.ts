@@ -1,5 +1,5 @@
 class Integer {
-  private value: number;
+  #value: number;
 
   constructor(value: number) {
     // Check if value is a number
@@ -22,32 +22,35 @@ class Integer {
       throw new TypeError('Value must be an integer');
     }
 
-    this.value = value;
+    this.#value = value;
   }
 
   add(other: Integer): Integer {
-    return new Integer(this.value + other.value);
+    return new Integer(this.#value + other.#value);
   }
 
   div(other: Integer): Integer {
-    if (other.value === 0) {
+    if (other.#value === 0) {
       throw new Error('Division by zero');
     }
-    return new Integer(Math.floor(this.value / other.value));
+    return new Integer(Math.floor(this.#value / other.#value));
   }
 
   gt(other: Integer): boolean {
-    return this.value > other.value;
+    return this.#value > other.#value;
   }
 
   get(): number {
-    return this.value;
+    return this.#value;
   }
 }
 
 // Usage
 
 const a = new Integer(7);
+
+console.log(Object.keys(a));
+console.log(Object.getPrototypeOf(a));
 const b = new Integer(3);
 
 const c = a.add(b);
