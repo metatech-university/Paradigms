@@ -1,6 +1,26 @@
-'use strict';
+"use strict";
 
-// Put implementation here
+function Do(value) {
+  return new DoClass(value);
+}
+
+class DoClass {
+  #value;
+
+  constructor(value) {
+    this.#value = value;
+    return this;
+  }
+
+  bind(fn) {
+    const value = fn(this.#value);
+    return new DoClass(value);
+  }
+
+  run() {
+    return this.#value;
+  }
+}
 
 Do({ id: 15 })
   .bind(({ id }) => ({ id, name: 'marcus', age: 42 }))
