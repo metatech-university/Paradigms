@@ -1,5 +1,29 @@
 class Integer {
-  // Put implementation here
+  private value: number;
+
+  constructor(value: number) {
+    if (!Number.isInteger(value)) {
+      throw new Error(`Value must be an integer, got ${value}`);
+    }
+
+    this.value = value;
+  }
+
+  add(other: Integer): Integer {
+    return new Integer(this.value + other.value);
+  }
+
+  div(other: Integer): Integer {
+    return new Integer(this.value / other.value);
+  }
+
+  gt(other: Integer): boolean {
+    return this.value > other.value;
+  }
+
+  get(): number {
+    return this.value;
+  }
 }
 
 // Usage
