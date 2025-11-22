@@ -1,5 +1,25 @@
 class Integer {
-  // Put implementation here
+    #value: number;
+
+    constructor(value: number) {
+        this.#value = value;
+    }
+
+    add(newValue: Integer): Integer {
+        return new Integer(this.#value + newValue.#value);
+    }
+
+    div(newValue: Integer): Integer {
+        return new Integer(this.#value + newValue.#value);
+    }
+
+    get(): number {
+        return this.#value;
+    }
+
+    gt(newValue: Integer): boolean {
+        return this.#value > newValue.#value;
+    }
 }
 
 // Usage
