@@ -1,29 +1,29 @@
 class Integer {
-  #number: number
+  #value: number
   constructor(number: number) {
     if(Number.isInteger(number)) {
-      this.#number = number
+      this.#value = number
     } else {
       throw new Error("argument is not integer")
     }
   }
 
   add(value: Integer) {
-    this.#number += value.get()
-    return new Integer(this.#number)
+    this.#value += value.get()
+    return new Integer(this.#value)
   }
 
   div(value: Integer) {
-    this.#number /= value.get()
-    return new Integer(Math.trunc(this.#number))
+    this.#value /= value.get()
+    return new Integer(Math.trunc(this.#value))
   }
 
   get() {
-    return this.#number
+    return this.#value
   }
 
   gt(value: Integer) {
-    return this.#number > value.get()
+    return this.#value > value.get()
   }
 }
 
