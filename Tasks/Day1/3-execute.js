@@ -1,33 +1,55 @@
 'use strict';
 
-const reader = ({ id }) => ({ id, name: 'marcus', age: 42 });
+const reader = ({ id }) => ({ id, name: 'marcus', age: 42 })
 
-const execute = (plan) => (reader, log, env = {}) => {
-  if (plan.read) {
-    const user = reader(plan.read);
-    return execute(plan.then)(reader, log, { user });
+class Executor {
+  #plan
+
+  constructor(plan) {
+    this.#plan = plan
   }
-  if (plan.match) {
-    const ok = env.user.name === plan.match.name;
-    return execute(ok ? plan.success : plan.fail)(reader, log, env);
+
+  execute(reader, log, env = {}) {
+    return this._executeSteps([this.#plan], reader, log, env)
   }
-  if (plan.effect) {
-    if (plan.effect.log) return () => log(env.user[plan.effect.log]);
-    if (plan.effect === 'noop') return () => {};
+
+  _executeSteps(steps, reader, log, env) {
+    for (const step of steps) {
+      if (step.type === 'read') {
+        const user = reader(step.value)
+        env = { ...env, user }
+        if (step.next && step.next.length) {
+          return this._executeSteps(step.next, reader, log, env)
+        }
+      } else if (step.type === 'match') {
+        const ok = env.user && env.user.name === step.value.name
+        const idx = ok ? 0 : 1
+        if (step.next && step.next.length > idx) {
+          return this._executeSteps([step.next[idx]], reader, log, env)
+        }
+      } else if (step.type === 'log') {
+        return () => log(env.user[step.value])
+      } else if (step.type === 'noop') {
+        return () => {}
+      }
+    }
   }
-};
+}
 
-execute({
-  read: { id: 15 },
-  then: {
-    match: { name: 'marcus' },
-    success: { effect: { log: 'age' } },
-    fail: { effect: 'noop' },
-  },
-})(reader, console.log)();
+const plan = {
+  type: 'read',
+  value: { id: 15 },
+  next: [
+    {
+      type: 'match',
+      value: { name: 'marcus' },
+      next: [
+        { type: 'log', value: 'age' },
+        { type: 'noop' },
+      ],
+    },
+  ],
+}
 
-// 1. Rewrite in OOP style
-// 2. Improve data structure inconsistence
-
-// const main = new Exec(options);
-// main.run(steps);
+const executor = new Executor(plan);
+executor.execute(reader, console.log)();

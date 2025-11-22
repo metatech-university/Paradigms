@@ -1,5 +1,30 @@
 class Integer {
-  // Put implementation here
+  #value: number
+  constructor(number: number) {
+    if(Number.isInteger(number)) {
+      this.#value = number
+    } else {
+      throw new Error("argument is not integer")
+    }
+  }
+
+  add(value: Integer) {
+    this.#value += value.get()
+    return new Integer(this.#value)
+  }
+
+  div(value: Integer) {
+    this.#value /= value.get()
+    return new Integer(Math.trunc(this.#value))
+  }
+
+  get() {
+    return this.#value
+  }
+
+  gt(value: Integer) {
+    return this.#value > value.get()
+  }
 }
 
 // Usage
