@@ -6,6 +6,7 @@ class DoSmth {
     this.binds = [];
 
     return (value) => {
+      this.binds = [];
       this.value = value;
       return this;
     }
