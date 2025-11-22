@@ -2,21 +2,33 @@
 
 // Rewrite to TypeScript with interface
 
-class Serializable {
-  toJson() {
-    return JSON.stringify(this);
-  }
+interface Serializable {
+  toJson(): string;
 }
 
-class User extends Serializable {
-  #id;
-  #name;
+// class Serializable {
+//   toJson() {
+//     return JSON.stringify(this);
+//   }
+// }
 
-  constructor(id, name) {
-    super();
-    this.#id = id;
-    this.#name = name;
-  }
+class User implements Serializable {
+    #id: number;
+    #name: string;
+
+    constructor(id: number, name: string) {
+        // super();
+        this.#id = id;
+        this.#name = name;
+    }
+
+    toJson(): string {
+        return JSON.stringify({id: this.#id, name: this.#name});
+    }
+
+    get [Symbol.toStringTag]() {
+        return "User";
+    }
 }
 
 const user = new User(15, 'Marcus');
