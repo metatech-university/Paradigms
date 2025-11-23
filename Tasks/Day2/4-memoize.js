@@ -2,8 +2,31 @@
 
 // implement memoize
 
-const memoize = (f) => f;
+// const memoize = (f) => f;
+const cache = new Map();
+const memoize = (f) => (...args) => {
+  const key = args.map((arg) => `${arg}:${typeof arg}`).join(';');
 
-const fib = memoize((n) => n <= 1 ? n : fib(n - 1) + fib(n - 2));
+  if (cache.has(key)) return cache.get(key);
+  const res = f(...args);
+  cache.set(key, res);
 
-console.log(fib(10));
+  return res;
+};
+
+const n = 40;
+
+console.time('memoized');
+const fibM = memoize((n) => n <= 1 ? n : fibM(n - 1) + fibM(n - 2));
+console.log(fibM(n));
+console.timeEnd('memoized');
+
+console.log('-------');
+
+console.time('non-memoized');
+const fib = (n) => n <= 1 ? n : fib(n - 1) + fib(n - 2);
+console.log(fib(n));
+console.timeEnd('non-memoized');
+
+
+// console.dir({cache});
