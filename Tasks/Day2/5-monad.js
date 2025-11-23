@@ -68,9 +68,8 @@ log
 
 const pipe = (initialValue, ...args) => args.reduce((acc, fn) => fn(acc), initialValue)
 
-// TODO: move to the monad class
-const map = (fn) => (monad) => monad.map(fn)
-const chain = (fn) => (monad) => monad.chain(fn)
+const map = fn => monad => monad.map(fn)
+const chain = fn => monad => monad.chain(fn)
 
 
 const resPipe = pipe(
