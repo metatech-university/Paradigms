@@ -27,3 +27,14 @@ class Monad {
     return container.map(fn);
   }
 }
+
+const add = (value) => (monadValue) => monadValue + value;
+const log = (monadValue) => {
+  console.log('Sum:', monadValue);
+}
+
+const sum1 = Monad.of(1)
+  .map(add(9))
+  .map(add(1))
+  .map(add(7))
+  .chain(log);
