@@ -1,6 +1,6 @@
 'use strict';
 
-// Rewrite previous example using this Monad
+// Rewrite code from examples 1,2,3 using this Monad
 // do not change code of Monad
 
 class Monad {
