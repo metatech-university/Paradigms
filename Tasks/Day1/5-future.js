@@ -4,20 +4,45 @@ const fs = require('node:fs');
 
 class Future {
   // Put implementation here
+	#callback;
+
+	constructor(callback) {
+		this.#callback = callback;
+	}
+
+	map(fn) {
+		return new Future((reject, resolve) =>
+			this.fork(
+				reject,
+				(value) => resolve(fn(value))
+			)
+		);
+	}
+
+	chain(fn) {
+		return new Future((reject, resolve) =>
+			this.fork(
+				reject,
+				(value) => fn(value).fork(reject, resolve)
+			)
+		);
+	}
+
+	fork(reject, resolve) {
+		this.#callback(resolve, reject);
+	}
 }
 
 const futurify = (fn) =>
   (...args) =>
     new Future((reject, resolve) =>
-      fn(...args, (error, result) =>
-        error ? reject(error) : resolve(result),
-      ),
+      fn(...args, (error, result) => error ? reject(error) : resolve(result)),
     );
 
 const readFuture = futurify(fs.readFile);
 const writeFuture = futurify(fs.writeFile);
 
-readFuture('future.js', 'utf8')
+readFuture('5-future.js', 'utf8')
   .map((text) => text.toUpperCase())
   .chain((text) => writeFuture('future.md', text))
   .fork(
