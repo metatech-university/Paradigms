@@ -32,10 +32,11 @@ const fib = (n) => n <= 1 ? n : fib(n - 1) + fib(n - 2);
 
 const memoizationMonad = Monad
     .of((cacheMap) => (f) => (...args) => {
+      const newCacheMap = new Map(cacheMap);
       const cacheKey = args.map((arg) => `${typeof arg}-${arg.toString()}`).join('|');
-      if (!cacheMap.has(cacheKey)) cacheMap.set(cacheKey, f(...args))
+      if (!newCacheMap.has(cacheKey)) newCacheMap.set(cacheKey, f(...args))
 
-      return cacheMap.get(cacheKey)
+      return newCacheMap.get(cacheKey)
     })
 
 const memoizedFibonacci = memoizationMonad.ap(Monad.of(new Map())).ap(Monad.of(fib))
