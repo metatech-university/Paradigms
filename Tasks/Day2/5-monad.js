@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Rewrite code from examples 1,2,3 using this Monad
 // do not change code of Monad
@@ -27,3 +27,16 @@ class Monad {
     return container.map(fn);
   }
 }
+
+const get = (value) => value;
+const sumMonad = Monad.of((x) => (y) => x + y);
+
+const createAdder = (container) => ({
+  add: (value) =>  createAdder(sumMonad.ap(container).ap(Monad.of(value))),
+  valueOf: () => container.chain(get),
+});
+
+const sum1 = createAdder(Monad.of(1))
+  .add(5)
+  .add(-2)
+console.log(+sum1);
