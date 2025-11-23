@@ -27,3 +27,39 @@ class Monad {
     return container.map(fn);
   }
 }
+
+// const sum1 = createAdder(1).add(9).add(1).add(7);
+// console.log('Sum:', +sum1);
+
+const add = (a) => (b) => a + b
+
+// const logSum = Monad.of(console.log.bind(console, 'Sum:'))
+const log = Monad
+  .of(console.log)
+
+
+const res = Monad
+  .of(1)
+  .map(add(9))
+  .map(add(1))
+  .map(add(7))
+
+
+log
+  .map(fn => fn.bind(console, 'Sum:'))
+  .ap(res)
+
+  // ------------- Showcase usage of chain
+
+const addMondaic = (a) => (b) => Monad.of(a + b)
+
+const resMon = Monad
+  .of(1)
+  .chain(addMondaic(9))
+  .chain(addMondaic(1))
+  .chain(addMondaic(7))
+
+
+log
+  .map(fn => fn.bind(console, 'Sum monadic:'))
+  .ap(resMon)
