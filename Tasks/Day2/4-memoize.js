@@ -8,7 +8,7 @@ const memoize = (f, keyBuilder = defaultKeyBuilder) => {
     const cache = new Map();
     return (...args) => {
         const key = keyBuilder(...args)
-        if (cache.get(key) == null) {
+        if (cache.get(key) === undefined) {
             const res = f(...args)
             cache.set(key, res)
         }

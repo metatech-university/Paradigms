@@ -10,12 +10,12 @@ class Adder {
     this.#value = initial;
   }
 
-  static create(value){ 
+  static of(value){ 
     return new Adder(value)
   }
 
   add(x) {
-    return new Adder(this.#value + x);
+    return Adder.of(this.#value + x);
   }
 
   valueOf() {
@@ -24,5 +24,5 @@ class Adder {
 }
 
 // const sum1 = new Adder(1).add(9).add(1).add(7);
-const sum1 = Adder.create(1).add(9).add(1).add(7);
+const sum1 = Adder.of(1).add(9).add(1).add(7);
 console.log('Sum:', +sum1);
