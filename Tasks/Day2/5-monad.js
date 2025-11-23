@@ -10,7 +10,7 @@ const memoize =
 
     return (n) =>
       cache.hasOwnProperty(n)
-        ? (console.log('cache'), cache[n])
+        ? cache[n]
         : cache[n] = fn(n)
   }
 
