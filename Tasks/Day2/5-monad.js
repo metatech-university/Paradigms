@@ -49,7 +49,7 @@ log
   .map(fn => fn.bind(console, 'Sum:'))
   .ap(res)
 
-  // ------------- Showcase usage of chain
+// ------------- Showcase usage of chain
 
 const addMondaic = (a) => (b) => Monad.of(a + b)
 
@@ -63,3 +63,23 @@ const resMon = Monad
 log
   .map(fn => fn.bind(console, 'Sum monadic:'))
   .ap(resMon)
+
+// ------------- Showcase usage of pipe
+
+const pipe = (initialValue, ...args) => args.reduce((acc, fn) => fn(acc), initialValue)
+
+// TODO: move to the monad class
+const map = (fn) => (monad) => monad.map(fn)
+const chain = (fn) => (monad) => monad.chain(fn)
+
+
+const resPipe = pipe(
+  Monad.of(1),
+  map(add(9)),
+  map(add(1)),
+  map(add(7)),
+)
+
+log
+  .map(fn => fn.bind(console, 'Sum pipe:'))
+  .ap(resPipe)
