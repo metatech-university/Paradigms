@@ -1,6 +1,6 @@
 'use strict'
 
-// Put implementation here
+// Put implementation here in class syntax
 
 class Do {
   #steps = []
