@@ -2,17 +2,22 @@
 
 // implement memoize
 // const memoize = (f) => f;
+const cacheKey = (args) =>
+  args.map((a) => (typeof a === "object" ? JSON.stringify(a) : a)).join("|");
+
 const useCache = () => {
   const cache = new Map();
 
-  return (fn) => (value) => {
-    if (cache.has(value)) {
-      return cache.get(value);
-    }
-    const res = fn(value);
-    cache.set(value, res);
-    return res;
-  };
+  return (fn) =>
+    (...args) => {
+      const key = cacheKey(args);
+      if (cache.has(key)) {
+        return cache.get(key);
+      }
+      const res = fn(...args);
+      cache.set(key, res);
+      return res;
+    };
 };
 
 const memoize = useCache();

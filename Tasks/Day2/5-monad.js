@@ -30,9 +30,7 @@ class Monad {
 
 const create = (initial) => Monad.of(initial);
 const add = (x) => (value) => value + x;
+const log = Monad.of(console.log);
 
-const m0 = create(1);
-const m1 = m0.map(add(9));
-const m2 = m1.map(add(1));
-const m3 = m2.map(add(7));
-const sum1 = m3.chain(console.log);
+const monadic = create(1).map(add(9)).map(add(1)).map(add(7));
+log.ap(monadic);
