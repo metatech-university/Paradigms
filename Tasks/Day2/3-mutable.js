@@ -5,10 +5,11 @@
 
 const createAdder = (init) => {
   let mutaValue = init
-  return ({
-    add: (x) => { mutaValue += x; return createAdder(mutaValue) },
+  const add =  ({
+    add: (x) => { mutaValue += x; return add },
     valueOf: () => mutaValue
   })
+  return add
 }
 
 // const sum1 = new Adder(1).add(9).add(1).add(7);
