@@ -14,6 +14,6 @@ const memoize = (f) => {
   };
 };
 
-const fib = memoize((n) => n <= 1 ? n : fib(n - 1, 2) + fib(n - 2, 3));
+const fib = memoize((n) => n <= 1 ? n : fib(n - 1) + fib(n - 2));
 
 console.log(fib(10));
