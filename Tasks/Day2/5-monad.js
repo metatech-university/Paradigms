@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Rewrite code from examples 1,2,3 using this Monad
 // do not change code of Monad
@@ -27,3 +27,11 @@ class Monad {
     return container.map(fn);
   }
 }
+
+const create = (initial) => Monad.of(initial);
+const add = (x) => (y) => x + y;
+const m0 = create(1);
+const m1 = m0.map(add(9));
+const m2 = m1.map(add(1));
+const m3 = m2.map(add(7));
+const sum = m3.chain(console.log);
