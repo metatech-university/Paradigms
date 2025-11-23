@@ -1,5 +1,6 @@
 'use strict';
 
+// Put implementation here in class syntax
 class Do {
   constructor(value) {
     this.value = value;
