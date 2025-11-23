@@ -2,14 +2,17 @@
 
 // Rewrite previous example using this Monad
 // do not change code of Monad
-const fib = (n) => (n <= 0 ? n : fib(n - 1) + fib(n - 2))
+
+let fib = (n) => (n <= 1 ? n : fib(n - 1) + fib(n - 2))
 
 const memoize =
-  (fn, cache = {}) =>
-    (n) =>
+  (fn, cache = {}) => {
+
+    return (n) =>
       cache.hasOwnProperty(n)
-        ? cache[n]
+        ? (console.log('cache'), cache[n])
         : cache[n] = fn(n)
+  }
 
 class Monad {
   #value;
@@ -38,5 +41,8 @@ class Monad {
 
 const init = Monad.of(10)
 const memoFib = Monad.of(memoize).ap(Monad.of(fib))
+
+fib = memoFib.chain((f) => f)
+
 const res = memoFib.ap(init)
 res.chain(console.log)
