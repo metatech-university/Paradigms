@@ -34,7 +34,7 @@ const memoize = (f) => {
   const cacheMap = new Map()
 
   return (...args) => {
-    const cacheKey = args.map((arg) => arg.toString()).join('|');
+    const cacheKey = args.map((arg) => `${typeof arg}-${arg.toString()}`).join('|');
     if (!cacheMap.has(cacheKey)) cacheMap.set(cacheKey, f(...args))
 
     return cacheMap.get(cacheKey)
