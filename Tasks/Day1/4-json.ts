@@ -2,20 +2,21 @@
 
 // Rewrite to TypeScript with interface
 
-class Serializable {
-  toJson() {
-    return JSON.stringify(this);
-  }
+interface Serializable {
+  toJson(): string
 }
 
-class User extends Serializable {
-  #id;
-  #name;
+class User implements Serializable {
+  private #id: string;
+  private #name: string;
 
   constructor(id, name) {
-    super();
     this.#id = id;
     this.#name = name;
+  }
+
+  public toJson(): string {
+    return JSON.stringify({ id: this.#id, name: this.#name });
   }
 }
 

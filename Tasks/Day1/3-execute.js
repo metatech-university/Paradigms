@@ -2,32 +2,45 @@
 
 const reader = ({ id }) => ({ id, name: 'marcus', age: 42 });
 
-const execute = (plan) => (reader, log, env = {}) => {
-  if (plan.read) {
-    const user = reader(plan.read);
-    return execute(plan.then)(reader, log, { user });
-  }
-  if (plan.match) {
-    const ok = env.user.name === plan.match.name;
-    return execute(ok ? plan.success : plan.fail)(reader, log, env);
-  }
-  if (plan.effect) {
-    if (plan.effect.log) return () => log(env.user[plan.effect.log]);
-    if (plan.effect === 'noop') return () => {};
-  }
-};
+class Exec {
+  #reader = null;
+  #logger = null;
 
-execute({
+  constructor({ reader, logger }) {
+    this.#reader = reader;
+    this.#logger = logger;
+  }
+
+  run(plan, context = {}) {
+    if (plan.read) {
+      return this.run(plan.then, this.#reader(plan.read));
+    }
+
+    if (plan.match) {
+      for (const [key, value] of Object.entries(plan.match)) {
+        if (context[key] !== value) {
+          return this.run(plan.fail, context);
+        }
+
+        return this.run(plan.success, context);
+      }
+    }
+
+    if (plan.effect) {
+      if (plan.effect === 'noop') {
+        return () => {}
+      } else if (plan.effect.log) {
+        return () => this.#logger(context[plan.effect.log])
+      }
+    }
+  }
+}
+
+new Exec({ reader, logger: console.log }).run(({
   read: { id: 15 },
   then: {
     match: { name: 'marcus' },
     success: { effect: { log: 'age' } },
     fail: { effect: 'noop' },
   },
-})(reader, console.log)();
-
-// 1. Rewrite in OOP style
-// 2. Improve data structure inconsistence
-
-// const main = new Exec(options);
-// main.run(steps);
+}))();
