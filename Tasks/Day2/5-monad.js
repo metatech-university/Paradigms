@@ -29,12 +29,12 @@ class Monad {
 }
 
 const add = (value) => (monadValue) => monadValue + value;
-const valueOf = (monadValue) => monadValue;
+const log = (monadValue) => {
+  console.log('Sum:', monadValue);
+}
 
 const sum1 = Monad.of(1)
   .map(add(9))
   .map(add(1))
   .map(add(7))
-  .chain(valueOf);
-
-console.log('Sum:', sum1);
+  .chain(log);
