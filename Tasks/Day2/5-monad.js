@@ -27,3 +27,29 @@ class Monad {
     return container.map(fn);
   }
 }
+
+// Option 1:
+const createAdder = (initial) => {
+  let monad = Monad.of(initial);
+  
+  return {
+    add(x) {
+      monad = monad.map(value => value + x);
+
+      return this;
+    },
+    valueOf() {
+      return monad.chain(value => value);
+    },
+  };
+};
+
+const adder1 = createAdder(1).add(9).add(1).add(7);
+
+console.log('Sum 1:', +adder1);
+
+// Option 2:
+const add = (x) => (y) => x + y;
+const adder2 = Monad.of(1).map(add(9)).map(add(1)).map(add(7));
+
+console.log('Sum 2:', +adder2.chain(value => value));
