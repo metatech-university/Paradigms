@@ -1,23 +1,35 @@
-'use strict';
+"use strict";
 
 // Rewrite previous example from OOP with mutable state
 // to FP using closure-based syntax, immutable instance, method chaining
 
-class Adder {
-  constructor(initial) {
-    this.value = initial;
-  }
+// class Adder {
+//   constructor(initial) {
+//     this.value = initial;
+//   }
 
-  add(x) {
-    this.value += x;
-    return this;
-  }
+//   add(x) {
+//     this.value += x;
+//     return this;
+//   }
 
-  valueOf() {
-    return this.value;
-  }
-}
+//   valueOf() {
+//     return this.value;
+//   }
+// }
 
-const sum1 = new Adder(1).add(9).add(1).add(7);
+// const sum1 = new Adder(1).add(9).add(1).add(7);
 // TODO: sum1 = createAdder(1).add(9).add(1).add(7);
-console.log('Sum:', +sum1);
+
+const adder = (value) => {
+  const initial = value;
+  const create = (initial) => adder(initial);
+  const add = (x) => adder(initial + x);
+  const valueOf = () => initial;
+
+  return { create, add, valueOf };
+};
+const Adder = adder();
+
+const sum1 = Adder.create(1).add(9).add(1).add(7);
+console.log("Sum:", +sum1);
